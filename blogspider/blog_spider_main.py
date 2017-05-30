@@ -3,9 +3,11 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-url = 'http://blog.csdn.net/forezp'
+# url = 'http://blog.csdn.net/forezp'
+url = 'http://blog.csdn.net/upc_club'
 
-titles=set()
+titles = set()
+
 
 def download(url):
     if url is None:
@@ -20,43 +22,42 @@ def download(url):
     except:
         return None
 
+
 def parse_title(html):
     if html is None:
         return None
     soup = BeautifulSoup(html, "html.parser")
     links = soup.find_all('a', href=re.compile(r'/forezp/article/details'))
     for link in links:
-
         titles.add(link.get_text())
 
 
 def parse_descrtion(html):
     if html is None:
         return None
-    soup=BeautifulSoup(html, "html.parser")
-    disciptions=soup.find_all('div',attrs={'class': 'article_description'})
+    soup = BeautifulSoup(html, "html.parser")
+    disciptions = soup.find_all('div', attrs={'class': 'article_description'})
     for link in disciptions:
-
         titles.add(link.get_text())
 
 
 def jiebaSet():
-    strs=''
-    if titles.__len__()==0:
+    strs = ''
+    if titles.__len__() == 0:
         return
     for item in titles:
-        strs=strs+item;
-
+        strs = strs + item;
 
     tags = jieba.analyse.extract_tags(strs, topK=100, withWeight=True)
     for item in tags:
         print(item[0] + '\t' + str(int(item[1] * 1000)))
 
+
 def main():
-   html= download(url)
-   # parse_title(html)
-   parse_descrtion(html)
-   jiebaSet()
+    html = download(url)
+    # parse_title(html)
+    parse_descrtion(html)
+    jiebaSet()
 
 
 if __name__ == '__main__':

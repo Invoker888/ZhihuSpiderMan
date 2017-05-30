@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+
 new_url_tokens = set()
 old_url_tokens = set()
 saved_users_set = set()
@@ -17,7 +18,7 @@ def download(url):
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36',
             'authorization': 'your authorization '
         })
-        print (response.content)
+        print(response.content)
         if (response.status_code == 200):
             return response.content
         return None
@@ -27,16 +28,16 @@ def download(url):
 
 def parse(response):
     try:
-        print (response)
+        print(response)
         json_body = json.loads(response);
         json_data = json_body['data']
         for item in json_data:
             if (not old_url_tokens.__contains__(item['url_token'])):
-                if(new_url_tokens.__len__()<2000):
-                   new_url_tokens.add(item['url_token'])
+                if (new_url_tokens.__len__() < 2000):
+                    new_url_tokens.add(item['url_token'])
             if (not saved_users_set.__contains__(item['url_token'])):
-                jj=json.dumps(item)
-                save(item['url_token'],jj )
+                jj = json.dumps(item)
+                save(item['url_token'], jj)
                 saved_users_set.add(item['url_token'])
 
         if (not json_body['paging']['is_end']):
@@ -45,7 +46,7 @@ def parse(response):
             parse(response2)
 
     except:
-        print ('parse fail')
+        print('parse fail')
 
 
 def save(url_token, strs):
@@ -58,7 +59,7 @@ def get_new_url():
     url_token = new_url_tokens.pop()
     old_url_tokens.add(url_token)
     url = URL_TEMPLATE.format(url_token) + QUERY_PARAMS.replace('url_token', url_token)
-    print (url)
+    print(url)
     return url
 
 
